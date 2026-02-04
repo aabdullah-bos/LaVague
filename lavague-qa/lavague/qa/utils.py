@@ -1,4 +1,5 @@
 import re
+import math
 from lavague.core.utilities.pricing_util import build_summary_table
 
 
@@ -38,7 +39,13 @@ def _has_sensitive_marker(text: str, markers) -> bool:
 def redact_sensitive_text(
     text: str, *, enabled: bool = True, markers=SENSITIVE_MARKERS
 ) -> str:
-    if not enabled or not text:
+    if text is None:
+        return ""
+    if isinstance(text, float) and math.isnan(text):
+        return ""
+    if not isinstance(text, str):
+        text = str(text)
+    if not enabled or text == "":
         return text
 
     lines = text.splitlines()
@@ -67,7 +74,6 @@ def redact_sensitive_text(
             )
 
         redacted_lines.append(line)
-
     return "\n".join(redacted_lines)
 
 

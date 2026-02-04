@@ -28,6 +28,7 @@ from lavague.qa.utils import (
     redact_sensitive_text,
     INDENT,
     INDENT_PASS,
+    redact_sensitive_text,
 )
 from lavague.qa.prompts import (
     FULL_PROMPT_TEMPLATE,
@@ -187,7 +188,9 @@ class TestGenerator:
         return agent.logger.return_pandas(), selenium_driver.get_html()
 
     def _process_logs(self, logs):
-        logs["action"] = logs["code"].dropna().apply(remove_comments)
+        logs["action"] = logs["code"].apply(
+            lambda v: remove_comments(v) if isinstance(v, str) else ""
+        )
         if self.redact_logs:
             logs["action"] = logs["action"].apply(redact_sensitive_text)
         cleaned_logs = logs[["instruction", "action"]].fillna("").copy()
