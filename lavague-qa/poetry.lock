@@ -1854,16 +1854,16 @@ langsmith-pyo3 = ["langsmith-pyo3 (>=0.1.0rc2,<0.2.0)"]
 
 [[package]]
 name = "lavague-contexts-openai"
-version = "0.2.4"
+version = "0.3.0"
 description = "Openai integration for lavague"
 optional = false
 python-versions = "^3.11.9"
 groups = ["main"]
 files = []
-develop = true
+develop = false
 
 [package.dependencies]
-lavague-core = "^0.3.0"
+lavague-core = {git = "https://github.com/aabdullah-bos/LaVague.git", branch = "feature/driver-generator-hook", subdirectory = "lavague-core"}
 llama-index-embeddings-azure-openai = "0.1.11"
 llama-index-embeddings-openai = "^0.1.9"
 llama-index-llms-azure-openai = "0.1.10"
@@ -1872,8 +1872,11 @@ llama-index-multi-modal-llms-azure-openai = "0.1.4"
 llama-index-multi-modal-llms-openai = "^0.1.6"
 
 [package.source]
-type = "directory"
-url = "../lavague-integrations/contexts/lavague-contexts-openai"
+type = "git"
+url = "https://github.com/aabdullah-bos/LaVague.git"
+reference = "feature/driver-generator-hook"
+resolved_reference = "a6f5db55bba61217bc060952772325e47798a3e0"
+subdirectory = "lavague-integrations/contexts/lavague-contexts-openai"
 
 [[package]]
 name = "lavague-core"
@@ -1883,7 +1886,7 @@ optional = false
 python-versions = "^3.11.9"
 groups = ["main"]
 files = []
-develop = true
+develop = false
 
 [package.dependencies]
 ipython = "^7.34.0"
@@ -1900,46 +1903,55 @@ tenacity = ">=8.2.0,<8.4.0"
 trafilatura = "^1.9.0"
 
 [package.source]
-type = "directory"
-url = "../lavague-core"
+type = "git"
+url = "https://github.com/aabdullah-bos/LaVague.git"
+reference = "feature/driver-generator-hook"
+resolved_reference = "a6f5db55bba61217bc060952772325e47798a3e0"
+subdirectory = "lavague-core"
 
 [[package]]
 name = "lavague-drivers-selenium"
-version = "0.2.15"
+version = "0.3.0"
 description = "Selenium integration for lavague"
 optional = false
 python-versions = "^3.11.9"
 groups = ["main"]
 files = []
-develop = true
+develop = false
 
 [package.dependencies]
-lavague-core = "^0.3.0"
+lavague-core = {git = "https://github.com/aabdullah-bos/LaVague.git", branch = "feature/driver-generator-hook", subdirectory = "lavague-core"}
 PyYAML = ">=5.3"
 selenium = "^4.18.1"
 
 [package.source]
-type = "directory"
-url = "../lavague-integrations/drivers/lavague-drivers-selenium"
+type = "git"
+url = "https://github.com/aabdullah-bos/LaVague.git"
+reference = "feature/driver-generator-hook"
+resolved_reference = "a6f5db55bba61217bc060952772325e47798a3e0"
+subdirectory = "lavague-integrations/drivers/lavague-drivers-selenium"
 
 [[package]]
 name = "lavague-tests"
-version = "0.0.4"
+version = "0.3.0"
 description = "Test runner for Lavague"
 optional = false
 python-versions = "^3.11.9"
 groups = ["main"]
 files = []
-develop = true
+develop = false
 
 [package.dependencies]
 click = "^8.1.7"
-lavague-core = "^0.3.0"
-lavague-drivers-selenium = "^0.2.6"
+lavague-core = {git = "https://github.com/aabdullah-bos/LaVague.git", branch = "feature/driver-generator-hook", subdirectory = "lavague-core"}
+lavague-drivers-selenium = {git = "https://github.com/aabdullah-bos/LaVague.git", branch = "feature/driver-generator-hook", subdirectory = "lavague-integrations/drivers/lavague-drivers-selenium"}
 
 [package.source]
-type = "directory"
-url = "../lavague-tests"
+type = "git"
+url = "https://github.com/aabdullah-bos/LaVague.git"
+reference = "feature/driver-generator-hook"
+resolved_reference = "a6f5db55bba61217bc060952772325e47798a3e0"
+subdirectory = "lavague-tests"
 
 [[package]]
 name = "llama-cloud"
@@ -5472,4 +5484,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11.9"
-content-hash = "dd53fae9adf0d973149c86e97a3764dd7a39880045890cbff28009a7e495b84a"
+content-hash = "d25410f5cb353db2ce067c8755df5c1fb7817a9e6c752029bc1438cf3e0a733f"
