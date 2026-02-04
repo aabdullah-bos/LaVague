@@ -1,5 +1,6 @@
 import os
-from typing import List, Tuple
+import inspect
+from typing import Callable, List, Optional, Tuple
 import yaml
 import time
 from yaspin import yaspin
@@ -24,6 +25,7 @@ from lavague.qa.utils import (
     to_snake_case,
     get_nav_action_code,
     get_nav_control_code,
+    redact_sensitive_text,
     INDENT,
     INDENT_PASS,
 )
@@ -61,6 +63,9 @@ class TestGenerator:
         token_counter: TokenCounter,
         headless: bool,
         log_to_db: bool,
+        get_selenium_driver: Optional[Callable[[], WebDriver]] = None,
+        selenium_driver: Optional[WebDriver] = None,
+        redact_logs: bool = True,
     ):
         self.context = context
         self.url = url
@@ -69,6 +74,9 @@ class TestGenerator:
         self.token_counter = token_counter
         self.headless = headless
         self.log_to_db = log_to_db
+        self.get_selenium_driver = get_selenium_driver
+        self.selenium_driver = selenium_driver
+        self.redact_logs = redact_logs
 
         # parse feature
         self.scenarios, self.feature_file_content = self._read_scenarios(
@@ -132,7 +140,27 @@ class TestGenerator:
     def _run_lavague_agent(self):
         from lavague.core.utilities.telemetry import send_telemetry
 
-        selenium_driver = SeleniumDriver(headless=self.headless)
+        if self.selenium_driver is not None:
+            selenium_driver = SeleniumDriver(
+                driver=self.selenium_driver, headless=self.headless
+            )
+        elif self.get_selenium_driver is not None:
+            init_fn = self.get_selenium_driver
+            try:
+                params = inspect.signature(self.get_selenium_driver).parameters
+            except (TypeError, ValueError):
+                params = {}
+            if len(params) == 1:
+                init_fn = lambda: self.get_selenium_driver(headless=self.headless)
+            elif len(params) > 1:
+                raise ValueError(
+                    "get_selenium_driver must accept 0 or 1 parameters (headless)."
+                )
+            selenium_driver = SeleniumDriver(
+                get_selenium_driver=init_fn, headless=self.headless
+            )
+        else:
+            selenium_driver = SeleniumDriver(headless=self.headless)
         action_engine = ActionEngine.from_context(
             context=self.context, driver=selenium_driver
         )
@@ -160,7 +188,13 @@ class TestGenerator:
 
     def _process_logs(self, logs):
         logs["action"] = logs["code"].dropna().apply(remove_comments)
-        cleaned_logs = logs[["instruction", "action"]].fillna("")
+        if self.redact_logs:
+            logs["action"] = logs["action"].apply(redact_sensitive_text)
+        cleaned_logs = logs[["instruction", "action"]].fillna("").copy()
+        if self.redact_logs:
+            cleaned_logs["instruction"] = cleaned_logs["instruction"].apply(
+                redact_sensitive_text
+            )
         actions = "\n\n".join(
             cleaned_logs["instruction"] + " " + cleaned_logs["action"]
         )

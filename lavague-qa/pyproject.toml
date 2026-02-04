@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lavague-qa"
-version = "0.0.6"
+version = "0.3.0"
 description = "QA Automation with LaVague"
 authors = ["lavague-ai"]
 readme = "README.md"
@@ -21,12 +21,19 @@ packages = [{include = "lavague/"}]
 
 [tool.poetry.dependencies]
 python = "^3.11.9"
-lavague-core = "^0.2.33"
-lavague-tests = "^0.0.4"
-lavague-drivers-selenium = "^0.2.6"
+lavague-core = { git = "https://github.com/aabdullah-bos/LaVague.git", branch = "feature/driver-generator-hook", subdirectory = "lavague-core" }
+lavague-tests = { git = "https://github.com/aabdullah-bos/LaVague.git", branch = "feature/driver-generator-hook", subdirectory = "lavague-tests" }
+lavague-drivers-selenium = { git = "https://github.com/aabdullah-bos/LaVague.git", branch = "feature/driver-generator-hook", subdirectory = "lavague-integrations/drivers/lavague-drivers-selenium" }
+lavague-contexts-openai = { git = "https://github.com/aabdullah-bos/LaVague.git", branch = "feature/driver-generator-hook", subdirectory = "lavague-integrations/contexts/lavague-contexts-openai" }
+llama-index = "0.10.56"
+selenium = "^4.27.0"
+pytest = "^8.3.4"
+pytest-bdd = "^7.3.0"
+pyyaml = "^6.0.2"
 gherkin-official = "^28.0.0"
 click = "^8.1.7"
 yaspin = "^3.0.2"
+python-dotenv = "^1.2.1"
 
 [tool.poetry.scripts]
 lavague-qa = "lavague.qa.cli:cli"

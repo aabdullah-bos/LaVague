@@ -82,6 +82,13 @@ def extract_code_from_funct(funct: Callable) -> List[str]:
     """Extract code lines from a function while removing the first line (function definition) and the last line (return) and correcting indentation"""
     source_code = inspect.getsource(funct)
     source_code_lines = source_code.splitlines()[1:]  # remove the first line
+    if not source_code_lines:
+        return []
+    # drop leading blank lines if any
+    while source_code_lines and not source_code_lines[0].strip():
+        source_code_lines = source_code_lines[1:]
+    if not source_code_lines:
+        return []
     nident = len(source_code_lines[0]) - len(
         source_code_lines[0].lstrip()
     )  # count nb char in indentation
@@ -144,11 +151,14 @@ def replace_hyphens(text: str, replacement_char="•"):
 
 def extract_before_next_engine(text: str) -> str:
     # Define the patterns for "Next engine:" and similar patterns
-    next_engine_patterns = [r"Next engine:\s*", r"### Next Engine:\s*"]
+    next_engine_patterns = [
+        r"\*{0,2}\s*Next engine:\s*\*{0,2}\s*",
+        r"###\s*Next engine:\s*",
+    ]
 
     # Split the text using the "Next engine:" patterns
     for pattern in next_engine_patterns:
-        split_text = re.split(pattern, text, maxsplit=1)
+        split_text = re.split(pattern, text, maxsplit=1, flags=re.IGNORECASE)
         if len(split_text) > 1:
             result = split_text[0].strip()
             break
@@ -164,10 +174,13 @@ def extract_before_next_engine(text: str) -> str:
 def extract_next_engine(text: str, next_engines: List[str] = DEFAULT_ENGINES) -> str:
     # Use a regular expression to find the content after "Next engine:"
 
-    next_engine_patterns = [r"Next engine:\s*(.*)", r"### Next Engine:\s*(.*)"]
+    next_engine_patterns = [
+        r"\*{0,2}\s*Next engine:\s*\*{0,2}\s*(.*)",
+        r"###\s*Next engine:\s*(.*)",
+    ]
 
     for pattern in next_engine_patterns:
-        next_engine_match = re.search(pattern, text)
+        next_engine_match = re.search(pattern, text, flags=re.IGNORECASE)
         if next_engine_match:
             extracted_text = next_engine_match.group(1).strip()
             # To avoid returning a non-existent engine
