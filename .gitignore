@@ -73,6 +73,7 @@ docs/_build/
 
 #env
 .env
+lavague-qa/context.py
 test.ipynb
 
 #virtual environemnt

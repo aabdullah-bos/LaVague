@@ -26,7 +26,22 @@ lavague-qa --url https://amazon.fr/ --feature features/demo_amazon.feature
 ```
 Run `lavague-qa` to run a default example: Wikipedia login test
 
+## Custom context (authenticated flows)
+Create a `context.py` to provide an authenticated Selenium driver. A sample is provided:
+
+1) Copy the example:
+   `cp context.example.py context.py`
+2) Fill in the selectors and make sure `BASE_URL`, `TEST_USERNAME`, and `TEST_PASSWORD` are set.
+
+## Redaction
+By default, `lavague-qa` redacts sensitive values (e.g., passwords, tokens) from logs before sending them to the LLM.
+You can disable this for higher-fidelity generation if needed:
+
+`lavague-qa --no-redact ...`
+
+## TODO
+- Improve `get_selenium_driver` source extraction when contexts are loaded via `exec` (currently hardened against empty source).
+
 ## Learn more
 
 To learn more, please visit our LaVague QA documentation and join our [Discord](https://discord.gg/invite/SDxn9KpqX9) to reach our core team and get support!
-

@@ -1,4 +1,5 @@
 import re
+import math
 from lavague.core.utilities.pricing_util import build_summary_table
 
 
@@ -14,6 +15,66 @@ def remove_comments(code):
 
 def clean_llm_output(code: str) -> str:
     return code.replace("```python", "").replace("```", "").replace("```\n", "")
+
+
+SENSITIVE_MARKERS = (
+    "password",
+    "passwd",
+    "pwd",
+    "secret",
+    "token",
+    "otp",
+    "api_key",
+    "apikey",
+    "auth",
+    "bearer",
+)
+
+
+def _has_sensitive_marker(text: str, markers) -> bool:
+    lowered = text.lower()
+    return any(marker in lowered for marker in markers)
+
+
+def redact_sensitive_text(
+    text: str, *, enabled: bool = True, markers=SENSITIVE_MARKERS
+) -> str:
+    if text is None:
+        return ""
+    if isinstance(text, float) and math.isnan(text):
+        return ""
+    if not isinstance(text, str):
+        text = str(text)
+    if not enabled or text == "":
+        return text
+
+    lines = text.splitlines()
+    redacted_lines = []
+
+    for idx, line in enumerate(lines):
+        context_window = " ".join(lines[max(0, idx - 2) : idx + 1])
+        should_redact = _has_sensitive_marker(context_window, markers)
+
+        if "send_keys" in line and should_redact:
+            line = re.sub(
+                r"(send_keys\(\s*)([\"']).*?\2(\s*\))",
+                r"\1'[REDACTED]'\3",
+                line,
+            )
+        if should_redact:
+            line = re.sub(
+                r"(\"value\"\s*:\s*)(\".*?\"|\'.*?\')",
+                r'\1"[REDACTED]"',
+                line,
+            )
+            line = re.sub(
+                r"(value\s*=\s*)(\".*?\"|\'.*?\')",
+                r'\1"[REDACTED]"',
+                line,
+            )
+
+        redacted_lines.append(line)
+    return "\n".join(redacted_lines)
 
 
 def build_run_summary(logs, final_feature_path, final_pytest_path, execution_time):

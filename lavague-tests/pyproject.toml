@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lavague-tests"
-version = "0.0.4"
+version = "0.3.0"
 description = "Test runner for Lavague"
 authors = ["lavague-ai"]
 readme = "README.md"
@@ -25,9 +25,9 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.11.9"
-lavague-core = "^0.2.28"
+lavague-core = { git = "https://github.com/aabdullah-bos/LaVague.git", branch = "feature/driver-generator-hook", subdirectory = "lavague-core" }
 click = "^8.1.7"
-lavague-drivers-selenium = "^0.2.6"
+lavague-drivers-selenium = { git = "https://github.com/aabdullah-bos/LaVague.git", branch = "feature/driver-generator-hook", subdirectory = "lavague-integrations/drivers/lavague-drivers-selenium" }
 
 [tool.poetry.scripts]
 lavague-test = "lavague.tests.cli:cli"

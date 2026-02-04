@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lavague-drivers-selenium"
-version = "0.2.15"
+version = "0.3.0"
 description = "Selenium integration for lavague"
 authors = ["lavague-ai"]
 readme = "README.md"
@@ -21,7 +21,7 @@ packages = [{include = "lavague/"}]
 
 [tool.poetry.dependencies]
 python = "^3.11.9"
-lavague-core = "^0.2.26"
+lavague-core = { git = "https://github.com/aabdullah-bos/LaVague.git", branch = "feature/driver-generator-hook", subdirectory = "lavague-core" }
 selenium = "^4.18.1"
 PyYAML = ">=5.3"
 
